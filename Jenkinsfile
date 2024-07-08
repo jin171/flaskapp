@@ -1,10 +1,20 @@
- pipeline {
+pipeline {
 
  agent any
 
  stages {
 
  stage("build") {
+
+ when {
+
+ expression {
+
+ env.GIT_BRANCH == 'origin/master'
+
+ }
+
+ }
 
  steps {
 
@@ -16,7 +26,18 @@
 
  stage("test") {
 
- steps {
+ when {
+
+ expression {
+
+ env.GIT_BRANCH == 'origin/test' || env.GIT_BRANCH == ''
+
+ }
+
+ }
+
+
+steps {
 
  echo 'testing the applicaiton...'
 
@@ -33,28 +54,7 @@
  }
 
  }
-}
-
- post {
 
  }
-
- }
-
- always {
-
- echo 'building..'
-
- }
-
- success {
-
-            echo 'success'
-
- }
-
- failure {
-
-            echo 'failure'
 
  }
