@@ -1,4 +1,4 @@
-pipeline {
+ pipeline {
 
  agent any
 
@@ -33,7 +33,28 @@ pipeline {
  }
 
  }
+}
+
+ post {
 
  }
+
+ }
+
+ always {
+
+ echo 'building..'
+
+ }
+
+ success {
+
+            echo 'success'
+
+ }
+
+ failure {
+
+            echo 'failure'
 
  }
