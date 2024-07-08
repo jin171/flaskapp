@@ -1,53 +1,83 @@
 pipeline {
 
- agent any
+   agent any
 
- environment {
+   parameters {
 
- NEW_VERSION = '1.0.0'
+      choice(name: 'VERSION', choices: ['1.1.0','1.2.0','1.3.0'], description: '')
 
- ADMIN_CREDENTIALS = credentials('admin_user_credentials')
+      booleanParam(name: 'executeTests', defaultValue: true, description: '')
 
- }
+   }
 
- stages {
+   stages {
 
- stage("build") {
+      stage("init") {
 
- steps {
+         steps {
 
- echo 'building the applicaiton...'
+            script {
 
- echo "building version ${NEW_VERSION}"
+               gv = load "script.groovy"
 
- }
+            }
 
- }
+         }
 
- stage("test") {
+      }
 
- steps {
+      stage("build") {
 
- echo 'testing the applicaiton...'
+         steps {
 
- }
+            script {
 
- }
+               gv.buildApp()
 
- stage("deploy") {
+            }
 
- steps {
+         }
 
- echo 'deploying the applicaiton...'
+      }
 
- echo "deploying with ${ADMIN_CREDENTIALS}"
+      stage("test") {
 
- sh 'printf ${ADMIN_CREDENTIALS}'
+         when {
 
- }
+            expression {
 
- }
+               params.executeTests
 
- }
+            }
 
- }
+         }
+
+         steps {
+
+            script {
+
+               gv.testApp()
+
+            }
+
+         }
+
+      }
+
+      stage("deploy") {
+
+         steps {
+
+            script {
+
+               gv.deployApp()
+
+            }
+
+         }
+
+      }
+
+   }
+
+}
