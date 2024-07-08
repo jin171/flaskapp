@@ -40,7 +40,7 @@ pipeline {
 
 			steps {
 
-				sh 'docker build -t flaskapp:v1.0.0 .'
+				sh 'docker build -t flaskapp:v2.0.0 .'
 
 			}
 
@@ -63,6 +63,32 @@ pipeline {
 				script {
 
 					gv.testApp()
+
+				}
+
+			}
+
+		}
+
+		stage("Tag and Push") {
+
+			steps {
+
+				withCredentials([[$class: 'UsernamePasswordMultiBinding',
+
+				credentialsId: 'docker-hub', 
+
+				usernameVariable: 'DOCKER_USER_ID', 
+
+				passwordVariable: 'DOCKER_USER_PASSWORD'
+
+				]]) {
+
+					sh "docker tag flaskapp:latest ${DOCKER_USER_ID}/jenkins-app:${BUILD_NUMBER}"
+
+					sh "docker login -u ${DOCKER_USER_ID} -p ${DOCKER_USER_PASSWORD}"
+
+					sh "docker push ${DOCKER_USER_ID}/jenkins-app:${BUILD_NUMBER}"
 
 				}
 
