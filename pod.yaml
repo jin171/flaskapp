@@ -7,4 +7,4 @@ spec:
   - name: flask
     image: yudeen/flaskapp:v2.0.0
     ports: 
-    - containerPort: 80
+    - containerPort: 5000
